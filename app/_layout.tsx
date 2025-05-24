@@ -1,29 +1,43 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { ThemedView } from "@/components/ThemedView";
+import { useFonts } from "expo-font";
+import { SplashScreen, Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+SplashScreen.preventAutoHideAsync();
+
+function Layout() {
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="(authentication)/signIn" />
+      <Stack.Screen name="(authentication)/signUp" />
+    </Stack>
+  );
+}
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+  const [fontLoaded, fontError] = useFonts({
+    "Roboto-Bold": require("@/assets/fonts/Roboto-Bold.ttf"),
+    "Roboto-Light": require("@/assets/fonts/Roboto-Light.ttf"),
+    "Roboto-ExtraLight": require("@/assets/fonts/Roboto-ExtraLight.ttf"),
+    "Roboto-Regular": require("@/assets/fonts/Roboto-Regular.ttf"),
+    "Roboto-SemiBold": require("@/assets/fonts/Roboto-SemiBold.ttf"),
   });
 
-  if (!loaded) {
-    // Async font loading only occurs in development.
+  useEffect(() => {
+    if (fontLoaded || fontError) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontLoaded, fontError]);
+
+  if (!fontLoaded && !fontError) {
     return null;
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <ThemedView style={{ flex: 1 }}>
+      <StatusBar style="auto" animated />
+      <Layout />
+    </ThemedView>
   );
 }
