@@ -1,4 +1,5 @@
 import {
+  Button,
   StyleSheet,
   Text,
   TextInput,
@@ -10,6 +11,7 @@ import { ThemedText } from "./ThemedText";
 import PrimaryButton from "./PrimaryButton";
 import { Controller, useForm } from "react-hook-form";
 import { SignInFields, SignInForm as FormType } from "@/types";
+import CustomTextInput from "./Reusable/CustomTextInput";
 
 const SignInForm = () => {
   const defaultLoginValues = {
@@ -24,7 +26,9 @@ const SignInForm = () => {
   } = useForm<FormType>({
     defaultValues: defaultLoginValues,
   });
+  const onSubmit = (data) => console.log(data);
 
+  console.log(errors);
   return (
     // <>
     // <View>
@@ -86,40 +90,23 @@ const SignInForm = () => {
     //   </View>
     // </>
     <>
-      {/* <Controller
+      <CustomTextInput<FormType>
         control={control}
-        rules={{
-          required: true,
+        name={SignInFields.EMAIL}
+        textInputConfig={{
+          placeholder: "xyz@gmail.com",
+          keyboardType: "email-address",
         }}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <>
-            <View>
-              <ThemedText style={{ marginBottom: 10 }}>Email</ThemedText>
-              <View
-                style={{
-                  paddingVertical: 9,
-                  paddingHorizontal: 20,
-                  backgroundColor: "#2d3240",
-                  borderRadius: 12,
-                  marginBottom: 24,
-                }}
-              >
-                <TextInput
-                  style={styles.inputText}
-                  placeholder="xyz@gmail.com"
-                  placeholderTextColor={"gray"}
-                  keyboardType={"email-address"}
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                />
-              </View>
-            </View>
-          </>
-        )}
-        name={""}
-      /> */}
-      {/* {errors.email && <Text>This is required.</Text>} */}
+        label={SignInFields.EMAIL}
+        validation={{
+          pattern: {
+            value:
+              /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+            message: "Please enter a valid email",
+          },
+        }}
+      />
+      <Button title="Submit" onPress={handleSubmit(onSubmit)} />
     </>
   );
 };

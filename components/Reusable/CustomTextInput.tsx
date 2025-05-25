@@ -1,6 +1,5 @@
 import {
   StyleSheet,
-  Text,
   TextInput,
   TextInputProps,
   TextStyle,
@@ -12,24 +11,27 @@ import {
   Control,
   Controller,
   FieldValues,
+  Path,
   RegisterOptions,
 } from "react-hook-form";
-import { ThemedText } from "./ThemedText";
+import { ThemedText } from "../ThemedText";
+import { Colors } from "@/constants/Color";
 
 type CustomTextInputProps<T extends FieldValues> = {
-  control: Control<FieldValues, any, T>;
-  name: keyof T;
+  control: Control<T, any, T>;
+  name: Path<T>;
   labelStyles?: TextStyle;
   inputContainerStyles?: ViewStyle;
   textInputStyles?: TextStyle;
-  textInputConfig: TextInputProps;
-  validation:
+  textInputConfig?: TextInputProps;
+  validation?:
     | Omit<
-        RegisterOptions<FieldValues, string>,
+        RegisterOptions<T, Path<T>>,
         "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
       >
     | undefined;
-  isRequired: boolean;
+  isRequired?: boolean;
+  label: keyof T;
 };
 
 const CustomTextInput = <T extends FieldValues>({
@@ -41,22 +43,31 @@ const CustomTextInput = <T extends FieldValues>({
   textInputConfig,
   validation,
   isRequired = true,
+  label,
 }: CustomTextInputProps<T>) => {
+  const capitalizeLabel =
+    (label as string).charAt(0).toUpperCase() +
+    (label as string).slice(1).toLowerCase();
+
   return (
     <Controller
       control={control}
       rules={{
-        required: isRequired,
+        required: {
+          value: isRequired,
+          message: `${capitalizeLabel} is required`,
+        },
         ...validation,
       }}
       render={({ field: { onChange, onBlur, value } }) => (
         <View>
           <ThemedText style={[{ marginBottom: 10 }, labelStyles]}>
-            Email
+            {capitalizeLabel}
           </ThemedText>
           <View style={[styles.inputContainer, inputContainerStyles]}>
             <TextInput
               style={[styles.inputText, textInputStyles]}
+              placeholderTextColor="gray"
               {...textInputConfig}
               onBlur={onBlur}
               onChangeText={onChange}
@@ -65,7 +76,7 @@ const CustomTextInput = <T extends FieldValues>({
           </View>
         </View>
       )}
-      name={name as string}
+      name={name}
     />
   );
 };
@@ -74,7 +85,8 @@ export default CustomTextInput;
 
 const styles = StyleSheet.create({
   inputText: {
-    color: "white", // Optional: for visible text
+    color: Colors.white,
+    fontFamily: "Roboto-Light",
   },
 
   inputContainer: {
