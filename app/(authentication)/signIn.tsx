@@ -1,3 +1,4 @@
+import SignInForm from "@/components/SignInForm";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "@/constants/Color";
@@ -28,13 +29,23 @@ const SignIn = () => {
           <ThemedText>Register</ThemedText>
         </TouchableOpacity>
 
-        <View style={styles.headingContainer}>
-          <ThemedText style={styles.headingText}>
-            Sign in to {"\n"}Timesly
-          </ThemedText>
-          <ThemedText style={{ fontFamily: "Roboto-ExtraLight" }}>
-            Welcome back, you&apos;ve been missed!
-          </ThemedText>
+        <View
+          style={{
+            flex: 1,
+
+            justifyContent: "center",
+          }}
+        >
+          <View style={styles.headingContainer}>
+            <ThemedText style={styles.headingText}>
+              Sign in to {"\n"}Timesly
+            </ThemedText>
+            <ThemedText style={{ fontFamily: "Roboto-ExtraLight" }}>
+              Welcome back, you&apos;ve been missed!
+            </ThemedText>
+          </View>
+
+          <SignInForm />
         </View>
       </ThemedView>
     </SafeAreaView>
@@ -56,9 +67,9 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   headingContainer: {
-    flex: 1,
     alignItems: "flex-start",
     justifyContent: "center",
+    marginBottom: 70,
   },
   headingText: {
     paddingVertical: 20,
