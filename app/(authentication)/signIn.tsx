@@ -2,8 +2,11 @@ import SignInForm from "@/components/SignInForm";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "@/constants/Color";
+import { useRouter } from "expo-router";
 import React from "react";
 import {
+  KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   TouchableOpacity,
   useColorScheme,
@@ -13,6 +16,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const SignIn = () => {
   const colorScheme = useColorScheme();
+
+  const router = useRouter();
 
   return (
     <SafeAreaView
@@ -24,30 +29,39 @@ const SignIn = () => {
             : Colors.light.background,
       }}
     >
-      <ThemedView style={styles.container}>
-        <TouchableOpacity style={styles.registerBtn}>
-          <ThemedText>Register</ThemedText>
-        </TouchableOpacity>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <View style={{ flex: 1, overflow: "hidden" }}>
+          <ThemedView style={styles.container}>
+            <TouchableOpacity
+              style={styles.registerBtn}
+              onPress={() => router.push("/(authentication)/signUp")}
+            >
+              <ThemedText>Register</ThemedText>
+            </TouchableOpacity>
 
-        <View
-          style={{
-            flex: 1,
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+              }}
+            >
+              <View style={styles.headingContainer}>
+                <ThemedText style={styles.headingText}>
+                  Sign in to {"\n"}Timesly
+                </ThemedText>
+                <ThemedText style={{ fontFamily: "Roboto-ExtraLight" }}>
+                  Welcome back, you&apos;ve been missed!
+                </ThemedText>
+              </View>
 
-            justifyContent: "center",
-          }}
-        >
-          <View style={styles.headingContainer}>
-            <ThemedText style={styles.headingText}>
-              Sign in to {"\n"}Timesly
-            </ThemedText>
-            <ThemedText style={{ fontFamily: "Roboto-ExtraLight" }}>
-              Welcome back, you&apos;ve been missed!
-            </ThemedText>
-          </View>
-
-          <SignInForm />
+              <SignInForm />
+            </View>
+          </ThemedView>
         </View>
-      </ThemedView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
