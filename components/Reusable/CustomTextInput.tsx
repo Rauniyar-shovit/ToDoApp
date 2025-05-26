@@ -7,7 +7,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import React from "react";
+import React, { useCallback, useState } from "react";
 import {
   Control,
   Controller,
@@ -37,6 +37,7 @@ type CustomTextInputProps<T extends FieldValues> = {
   isRequired?: boolean;
   label: keyof T;
   error: FieldError | undefined;
+  errorTextStyles?: TextStyle;
 };
 
 const CustomTextInput = <T extends FieldValues>({
@@ -50,12 +51,34 @@ const CustomTextInput = <T extends FieldValues>({
   isRequired = true,
   label,
   error,
+  errorTextStyles,
 }: CustomTextInputProps<T>) => {
   const colorScheme = useColorScheme();
 
-  const capitalizeLabel =
-    (label as string).charAt(0).toUpperCase() +
-    (label as string).slice(1).toLowerCase();
+  const [isInputBlur, setIsInputBlur] = useState(false);
+
+  const capitalizeLabel = useCallback(
+    () =>
+      (label as string).charAt(0).toUpperCase() +
+      (label as string).slice(1).toLowerCase(),
+    [label]
+  );
+
+  const displayValidationIcons = (
+    <>
+      {isInputBlur && !error && (
+        <Ionicons
+          name="checkmark-circle-sharp"
+          size={24}
+          color={Colors.success}
+        />
+      )}
+
+      {error && (
+        <Ionicons name="close-circle-sharp" size={24} color={Colors.danger} />
+      )}
+    </>
+  );
 
   return (
     <Controller
@@ -69,9 +92,9 @@ const CustomTextInput = <T extends FieldValues>({
       }}
       render={({ field: { onChange, onBlur, value } }) => {
         return (
-          <View>
+          <View style={{ marginBottom: 24 }}>
             <ThemedText style={[{ marginBottom: 10 }, labelStyles]}>
-              {capitalizeLabel}
+              {capitalizeLabel()}
             </ThemedText>
             <ThemedView
               style={[
@@ -90,24 +113,21 @@ const CustomTextInput = <T extends FieldValues>({
                 style={[styles.inputText, textInputStyles]}
                 placeholderTextColor="gray"
                 {...textInputConfig}
-                onBlur={onBlur}
+                onBlur={() => {
+                  onBlur();
+                  setIsInputBlur(true);
+                }}
                 onChangeText={onChange}
                 value={value}
               />
 
-              {/* {!error && (
-              <Ionicons
-                name="checkmark-circle-sharp"
-                size={24}
-                color="#aed4af"
-              />
-            )}
-
-            {error && (
-              <Ionicons name="close-circle-sharp" size={24} color="#ff706e" />
-            )} */}
+              {displayValidationIcons}
             </ThemedView>
-            {error && <ThemedText>{error.message}</ThemedText>}
+            {error && (
+              <ThemedText style={[styles.errorText, errorTextStyles]}>
+                {error.message}
+              </ThemedText>
+            )}
           </View>
         );
       }}
@@ -128,9 +148,16 @@ const styles = StyleSheet.create({
     paddingVertical: 9,
     paddingHorizontal: 20,
     borderRadius: 12,
-    marginBottom: 24,
     alignItems: "center",
     justifyContent: "space-between",
     flexDirection: "row",
+  },
+
+  errorText: {
+    color: Colors.danger,
+    fontFamily: "Roboto-Light",
+    fontSize: 13,
+    marginTop: 3,
+    marginLeft: 5,
   },
 });
