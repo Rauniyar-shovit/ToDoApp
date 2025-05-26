@@ -9,4 +9,7 @@ export const Colors = {
   },
   primary: "#8f66ed",
   white: "#FFFFFF",
+  gray: {
+    500: "#2d3240",
+  },
 };
