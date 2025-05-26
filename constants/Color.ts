@@ -12,4 +12,6 @@ export const Colors = {
   gray: {
     500: "#2d3240",
   },
+  danger: "#ff706e",
+  success: "#aed4af",
 };

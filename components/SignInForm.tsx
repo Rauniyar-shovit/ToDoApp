@@ -23,11 +23,9 @@ const SignInForm = () => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormType>({
-    defaultValues: defaultLoginValues,
-  });
-  const onSubmit = (data) => {};
-  // console.log(data);
+  } = useForm<FormType>({ mode: "onBlur", defaultValues: defaultLoginValues });
+
+  const onSubmit = (data: any) => console.log(data);
 
   console.log(errors);
   return (
@@ -127,6 +125,7 @@ const SignInForm = () => {
             message: "Password cannot exceed 20 characters",
           },
         }}
+        error={errors[SignInFields.PASSWORD]}
       />
       <Button title="Submit" onPress={handleSubmit(onSubmit)} />
     </>
