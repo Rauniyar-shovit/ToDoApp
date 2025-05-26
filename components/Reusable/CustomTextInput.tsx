@@ -38,12 +38,14 @@ type CustomTextInputProps<T extends FieldValues> = {
   label: keyof T;
   error: FieldError | undefined;
   errorTextStyles?: TextStyle;
+  contentContainerStyles?: ViewStyle;
 };
 
 const CustomTextInput = <T extends FieldValues>({
   control,
   name,
   labelStyles,
+  contentContainerStyles,
   inputContainerStyles,
   textInputStyles,
   textInputConfig,
@@ -57,12 +59,9 @@ const CustomTextInput = <T extends FieldValues>({
 
   const [isInputBlur, setIsInputBlur] = useState(false);
 
-  const capitalizeLabel = useCallback(
-    () =>
-      (label as string).charAt(0).toUpperCase() +
-      (label as string).slice(1).toLowerCase(),
-    [label]
-  );
+  const capitalizedLabel =
+    (label as string).charAt(0).toUpperCase() +
+    (label as string).slice(1).toLowerCase();
 
   const displayValidationIcons = (
     <>
@@ -86,15 +85,15 @@ const CustomTextInput = <T extends FieldValues>({
       rules={{
         required: {
           value: isRequired,
-          message: `${capitalizeLabel} is required`,
+          message: `${capitalizedLabel} is required`,
         },
         ...validation,
       }}
       render={({ field: { onChange, onBlur, value } }) => {
         return (
-          <View style={{ marginBottom: 24 }}>
+          <View style={[{ marginBottom: 32 }, contentContainerStyles]}>
             <ThemedText style={[{ marginBottom: 10 }, labelStyles]}>
-              {capitalizeLabel()}
+              {capitalizedLabel}
             </ThemedText>
             <ThemedView
               style={[
