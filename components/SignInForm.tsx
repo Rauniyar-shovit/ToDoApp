@@ -26,7 +26,8 @@ const SignInForm = () => {
   } = useForm<FormType>({
     defaultValues: defaultLoginValues,
   });
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => {};
+  // console.log(data);
 
   console.log(errors);
   return (
@@ -103,6 +104,27 @@ const SignInForm = () => {
             value:
               /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
             message: "Please enter a valid email",
+          },
+        }}
+        error={errors[SignInFields.EMAIL]}
+      />
+
+      <CustomTextInput<FormType>
+        control={control}
+        name={SignInFields.PASSWORD}
+        textInputConfig={{
+          placeholder: "••••••••",
+          secureTextEntry: true,
+        }}
+        label={SignInFields.PASSWORD}
+        validation={{
+          minLength: {
+            value: 8,
+            message: "Password must be at least 8 characters",
+          },
+          maxLength: {
+            value: 20,
+            message: "Password cannot exceed 20 characters",
           },
         }}
       />
