@@ -1,17 +1,10 @@
-import {
-  Button,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { SignInForm as FormType, SignInFields } from "@/types";
 import React from "react";
-import { ThemedText } from "./ThemedText";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import PrimaryButton from "./PrimaryButton";
-import { Controller, useForm } from "react-hook-form";
-import { SignInFields, SignInForm as FormType } from "@/types";
 import CustomTextInput from "./Reusable/CustomTextInput";
+import { ThemedText } from "./ThemedText";
 
 const SignInForm = () => {
   const defaultLoginValues = {
@@ -25,69 +18,10 @@ const SignInForm = () => {
     formState: { errors },
   } = useForm<FormType>({ mode: "onBlur", defaultValues: defaultLoginValues });
 
-  const onSubmit = (data: any) => console.log(data);
+  const onSubmit = (data) => console.log(data);
 
-  console.log(errors);
+  console.log("Form errors:", errors);
   return (
-    // <>
-    // <View>
-    //   <ThemedText style={{ marginBottom: 10 }}>Email</ThemedText>
-    //   <View
-    //     style={{
-    //       paddingVertical: 9,
-    //       paddingHorizontal: 20,
-    //       backgroundColor: "#2d3240",
-    //       borderRadius: 12,
-    //       marginBottom: 24,
-    //     }}
-    //   >
-    //     <TextInput
-    //       style={styles.inputText}
-    //       placeholder="xyz@gmail.com"
-    //       placeholderTextColor={"white"}
-    //       keyboardType={"email-address"}
-    //     />
-    //   </View>
-    // </View>
-
-    //   <View>
-    //     <ThemedText style={{ marginBottom: 10 }}>Password</ThemedText>
-    //     <View
-    //       style={{
-    //         paddingVertical: 9,
-    //         paddingHorizontal: 20,
-    //         backgroundColor: "#2d3240",
-    //         borderRadius: 12,
-    //       }}
-    //     >
-    //       <TextInput
-    //         style={styles.inputText}
-    //         placeholder="****"
-    //         placeholderTextColor={"white"}
-    //         secureTextEntry={true}
-    //       />
-    //     </View>
-    //   </View>
-    //   <TouchableOpacity style={{ alignItems: "flex-end" }}>
-    //     <ThemedText
-    //       style={{
-    //         fontFamily: "Roboto-ExtraLight",
-    //         fontSize: 15,
-    //         marginVertical: 10,
-    //       }}
-    //     >
-    //       Forgot password?
-    //     </ThemedText>
-    //   </TouchableOpacity>
-
-    //   <View
-    //     style={{
-    //       marginTop: 90,
-    //     }}
-    //   >
-    //     <PrimaryButton handlePress={() => {}}>Sign In</PrimaryButton>
-    //   </View>
-    // </>
     <>
       <CustomTextInput<FormType>
         control={control}
@@ -126,8 +60,24 @@ const SignInForm = () => {
           },
         }}
         error={errors[SignInFields.PASSWORD]}
+        contentContainerStyles={{ marginBottom: 8 }}
       />
-      <Button title="Submit" onPress={handleSubmit(onSubmit)} />
+
+      <TouchableOpacity style={{ alignItems: "flex-end" }}>
+        <ThemedText style={styles.forgotPasswordText}>
+          Forgot password?
+        </ThemedText>
+      </TouchableOpacity>
+
+      <View
+        style={{
+          marginTop: 90,
+        }}
+      >
+        <PrimaryButton handlePress={handleSubmit(onSubmit)}>
+          Sign In
+        </PrimaryButton>
+      </View>
     </>
   );
 };
@@ -135,7 +85,8 @@ const SignInForm = () => {
 export default SignInForm;
 
 const styles = StyleSheet.create({
-  inputText: {
-    color: "white", // Optional: for visible text
+  forgotPasswordText: {
+    fontFamily: "Roboto-ExtraLight",
+    fontSize: 15,
   },
 });
