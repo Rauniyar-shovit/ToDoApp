@@ -4,20 +4,56 @@ import { useForm } from "react-hook-form";
 import { StyleSheet, View } from "react-native";
 import PrimaryButton from "../PrimaryButton";
 import CustomTextInput from "../Reusable/CustomTextInput";
+import { useSignUp } from "@clerk/clerk-expo";
+import { useRouter } from "expo-router";
 
 const SignUpForm = () => {
+  const { isLoaded, signUp, setActive } = useSignUp();
+  const router = useRouter();
   const defaultSingUpValues = {
     email: "",
     password: "",
+    name: "",
   };
 
   const {
     control,
     handleSubmit,
-    formState: { errors },
-  } = useForm<FormType>({ mode: "onBlur", defaultValues: defaultSingUpValues });
+    formState: { errors, dirtyFields },
+  } = useForm<FormType>({
+    mode: "onChange",
+    defaultValues: defaultSingUpValues,
+  });
 
-  const onSubmit = (data: any) => console.log(data);
+  const onSignUpPress = async (data: any) => {
+    if (!isLoaded) return;
+
+    try {
+      console.log("SignUp data:", data);
+
+      await signUp.create({
+        emailAddress: data.email,
+        password: data.password,
+      });
+
+      // Send user an email with verification code
+      await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
+
+      router.push({
+        pathname: "/verify/[email]",
+        params: { email: data.email },
+      });
+
+      // Set 'pendingVerification' to true to display second form
+      // and capture OTP code
+      // setPendingVerification(true);
+    } catch (err) {
+      // See https://clerk.com/docs/custom-flows/error-handling
+      // for more info on error handling
+      console.error(JSON.stringify(err, null, 2));
+    }
+    console.log(data);
+  };
 
   console.log("Form errors:", errors);
 
@@ -37,6 +73,7 @@ const SignUpForm = () => {
           },
         }}
         error={errors[SignUpFields.NAME]}
+        isDirty={dirtyFields[SignUpFields.NAME]}
       />
 
       <CustomTextInput<FormType>
@@ -55,6 +92,7 @@ const SignUpForm = () => {
           },
         }}
         error={errors[SignUpFields.EMAIL]}
+        isDirty={dirtyFields[SignUpFields.EMAIL]}
       />
 
       <CustomTextInput<FormType>
@@ -76,11 +114,12 @@ const SignUpForm = () => {
           },
         }}
         error={errors[SignUpFields.PASSWORD]}
+        isDirty={dirtyFields[SignUpFields.PASSWORD]}
         contentContainerStyles={{ marginBottom: 8 }}
       />
 
       <View style={styles.submitBtnContainer}>
-        <PrimaryButton handlePress={handleSubmit(onSubmit)}>
+        <PrimaryButton handlePress={handleSubmit(onSignUpPress)}>
           Sign Up
         </PrimaryButton>
       </View>

@@ -7,7 +7,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import {
   Control,
   Controller,
@@ -39,6 +39,7 @@ type CustomTextInputProps<T extends FieldValues> = {
   error: FieldError | undefined;
   errorTextStyles?: TextStyle;
   contentContainerStyles?: ViewStyle;
+  isDirty: boolean | undefined;
 };
 
 const CustomTextInput = <T extends FieldValues>({
@@ -54,10 +55,9 @@ const CustomTextInput = <T extends FieldValues>({
   label,
   error,
   errorTextStyles,
+  isDirty,
 }: CustomTextInputProps<T>) => {
   const colorScheme = useColorScheme();
-
-  const [isInputBlur, setIsInputBlur] = useState(false);
 
   const capitalizedLabel =
     (label as string).charAt(0).toUpperCase() +
@@ -65,7 +65,7 @@ const CustomTextInput = <T extends FieldValues>({
 
   const displayValidationIcons = (
     <>
-      {isInputBlur && !error && (
+      {!error && isDirty && (
         <Ionicons
           name="checkmark-circle-sharp"
           size={24}
@@ -123,7 +123,7 @@ const CustomTextInput = <T extends FieldValues>({
                 {...textInputConfig}
                 onBlur={() => {
                   onBlur();
-                  setIsInputBlur(true);
+                  // setIsInputBlur(true);
                 }}
                 onChangeText={onChange}
                 value={value}

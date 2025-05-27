@@ -3,14 +3,16 @@ import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-
+import { ClerkProvider } from "@clerk/clerk-expo";
+import { tokenCache } from "@clerk/clerk-expo/token-cache";
 SplashScreen.preventAutoHideAsync();
 
 function Layout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(authentication)/signIn" />
-      <Stack.Screen name="(authentication)/signUp" />
+      {/* <Stack.Screen name="(authentication)/signIn" />
+      <Stack.Screen name="(authentication)/signUp" /> */}
+      <Stack.Screen name="verify/[email]" />
     </Stack>
   );
 }
@@ -35,9 +37,11 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemedView style={{ flex: 1 }}>
-      <StatusBar style="auto" animated />
-      <Layout />
-    </ThemedView>
+    <ClerkProvider tokenCache={tokenCache}>
+      <ThemedView style={{ flex: 1 }}>
+        <StatusBar style="auto" animated />
+        <Layout />
+      </ThemedView>
+    </ClerkProvider>
   );
 }
