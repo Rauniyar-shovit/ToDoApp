@@ -10,7 +10,7 @@ export type SignInFormType = {
 export enum SignUpFields {
   EMAIL = "email",
   PASSWORD = "password",
-  NAME = "Name",
+  NAME = "name",
 }
 
 export type SignUpFormType = {
