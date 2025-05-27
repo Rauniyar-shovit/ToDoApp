@@ -10,6 +10,8 @@ export const Colors = {
   primary: "#8f66ed",
   white: "#FFFFFF",
   gray: {
+    200: "#81848c",
+    300: "#6c7079",
     500: "#2d3240",
   },
   danger: "#ff706e",

@@ -3,6 +3,16 @@ export enum SignInFields {
   PASSWORD = "password",
 }
 
-export type SignInForm = {
+export type SignInFormType = {
   [key in SignInFields]: string;
+};
+
+export enum SignUpFields {
+  EMAIL = "email",
+  PASSWORD = "password",
+  NAME = "Name",
+}
+
+export type SignUpFormType = {
+  [key in SignUpFields]: string;
 };
