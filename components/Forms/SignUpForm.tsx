@@ -1,13 +1,12 @@
-import { SignInForm as FormType, SignInFields } from "@/types";
+import { SignUpFormType as FormType, SignUpFields } from "@/types";
 import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
-import PrimaryButton from "./PrimaryButton";
-import CustomTextInput from "./Reusable/CustomTextInput";
-import { ThemedText } from "./ThemedText";
+import { useForm } from "react-hook-form";
+import { StyleSheet, View } from "react-native";
+import PrimaryButton from "../PrimaryButton";
+import CustomTextInput from "../Reusable/CustomTextInput";
 
-const SignInForm = () => {
-  const defaultLoginValues = {
+const SignUpForm = () => {
+  const defaultSingUpValues = {
     email: "",
     password: "",
   };
@@ -16,21 +15,38 @@ const SignInForm = () => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormType>({ mode: "onBlur", defaultValues: defaultLoginValues });
+  } = useForm<FormType>({ mode: "onBlur", defaultValues: defaultSingUpValues });
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data: any) => console.log(data);
 
   console.log("Form errors:", errors);
+
   return (
     <>
       <CustomTextInput<FormType>
         control={control}
-        name={SignInFields.EMAIL}
+        name={SignUpFields.NAME}
+        textInputConfig={{
+          placeholder: "johndoe123",
+        }}
+        label={SignUpFields.NAME}
+        validation={{
+          pattern: {
+            value: /^[a-zA-Z\s'-]{2,}$/,
+            message: "Please enter a valid name",
+          },
+        }}
+        error={errors[SignUpFields.NAME]}
+      />
+
+      <CustomTextInput<FormType>
+        control={control}
+        name={SignUpFields.EMAIL}
         textInputConfig={{
           placeholder: "xyz@gmail.com",
           keyboardType: "email-address",
         }}
-        label={SignInFields.EMAIL}
+        label={SignUpFields.EMAIL}
         validation={{
           pattern: {
             value:
@@ -38,17 +54,17 @@ const SignInForm = () => {
             message: "Please enter a valid email",
           },
         }}
-        error={errors[SignInFields.EMAIL]}
+        error={errors[SignUpFields.EMAIL]}
       />
 
       <CustomTextInput<FormType>
         control={control}
-        name={SignInFields.PASSWORD}
+        name={SignUpFields.PASSWORD}
         textInputConfig={{
           placeholder: "••••••••",
           secureTextEntry: true,
         }}
-        label={SignInFields.PASSWORD}
+        label={SignUpFields.PASSWORD}
         validation={{
           minLength: {
             value: 8,
@@ -59,34 +75,23 @@ const SignInForm = () => {
             message: "Password cannot exceed 20 characters",
           },
         }}
-        error={errors[SignInFields.PASSWORD]}
+        error={errors[SignUpFields.PASSWORD]}
         contentContainerStyles={{ marginBottom: 8 }}
       />
 
-      <TouchableOpacity style={{ alignItems: "flex-end" }}>
-        <ThemedText style={styles.forgotPasswordText}>
-          Forgot password?
-        </ThemedText>
-      </TouchableOpacity>
-
-      <View
-        style={{
-          marginTop: 90,
-        }}
-      >
+      <View style={styles.submitBtnContainer}>
         <PrimaryButton handlePress={handleSubmit(onSubmit)}>
-          Sign In
+          Sign Up
         </PrimaryButton>
       </View>
     </>
   );
 };
 
-export default SignInForm;
+export default SignUpForm;
 
 const styles = StyleSheet.create({
-  forgotPasswordText: {
-    fontFamily: "Roboto-ExtraLight",
-    fontSize: 15,
+  submitBtnContainer: {
+    marginVertical: 45,
   },
 });

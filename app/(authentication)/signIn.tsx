@@ -1,4 +1,4 @@
-import SignInForm from "@/components/SignInForm";
+import SignInForm from "@/components/Forms/SignInForm";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "@/constants/Color";
@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
+  Text,
   TouchableOpacity,
   useColorScheme,
   View,
@@ -58,6 +59,29 @@ const SignIn = () => {
               </View>
 
               <SignInForm />
+
+              <View style={styles.redirectionContainer}>
+                <Text
+                  style={[
+                    styles.haveAccountText,
+                    {
+                      color:
+                        colorScheme === "dark"
+                          ? Colors.gray[200]
+                          : Colors.light.text,
+                    },
+                  ]}
+                >
+                  Don&apos;t have an account?{" "}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => router.replace("/(authentication)/signUp")}
+                >
+                  <ThemedText style={styles.redirectionText}>
+                    Sign Up
+                  </ThemedText>
+                </TouchableOpacity>
+              </View>
             </View>
           </ThemedView>
         </View>
@@ -90,6 +114,22 @@ const styles = StyleSheet.create({
     fontSize: 35,
     fontFamily: "Roboto-SemiBold",
     lineHeight: 50,
-    letterSpacing: 0.2,
+    letterSpacing: 0.05,
+  },
+  redirectionContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+  },
+
+  haveAccountText: {
+    fontFamily: "Roboto-ExtraLight",
+    fontSize: 14,
+  },
+
+  redirectionText: {
+    color: Colors.primary,
+    fontFamily: "Roboto-Regular",
+    fontSize: 14,
   },
 });

@@ -109,7 +109,16 @@ const CustomTextInput = <T extends FieldValues>({
               ]}
             >
               <TextInput
-                style={[styles.inputText, textInputStyles]}
+                style={[
+                  styles.inputText,
+                  textInputStyles,
+                  {
+                    color:
+                      colorScheme === "light"
+                        ? Colors.light.text
+                        : Colors.dark.text,
+                  },
+                ]}
                 placeholderTextColor="gray"
                 {...textInputConfig}
                 onBlur={() => {
@@ -139,7 +148,6 @@ export default CustomTextInput;
 
 const styles = StyleSheet.create({
   inputText: {
-    color: Colors.white,
     flex: 1,
   },
 
