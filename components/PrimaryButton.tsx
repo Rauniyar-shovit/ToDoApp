@@ -16,6 +16,7 @@ type PrimaryButtonProps = {
   children: ReactNode;
   handlePress: () => void;
   iconName?: keyof typeof Ionicons.glyphMap;
+  showIcon?: boolean;
 };
 
 const PrimaryButton = ({
@@ -24,16 +25,17 @@ const PrimaryButton = ({
   children,
   handlePress,
   iconName = "arrow-forward-outline",
+  showIcon = true,
 }: PrimaryButtonProps) => {
   return (
-    <View style={{ alignItems: "center" }}>
+    <View>
       <TouchableOpacity
         style={[styles.btnContainer, btnContainerStyles]}
         onPress={handlePress}
       >
         <Text style={[styles.btnText, btnTextStyles]}>{children} </Text>
 
-        <Ionicons name={iconName} size={18} color="white" />
+        {showIcon && <Ionicons name={iconName} size={18} color="white" />}
       </TouchableOpacity>
     </View>
   );
@@ -48,9 +50,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 28,
     paddingVertical: 16,
     flexDirection: "row",
+    gap: 4,
     alignItems: "center",
     justifyContent: "center",
-    gap: 4,
   },
   btnText: {
     color: "#fff",

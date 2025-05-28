@@ -71,9 +71,7 @@ const SignUp = () => {
                   >
                     Already have an account?{" "}
                   </Text>
-                  <TouchableOpacity
-                    onPress={() => router.replace("/(authentication)/signIn")}
-                  >
+                  <TouchableOpacity onPress={() => router.replace("/signIn")}>
                     <ThemedText style={styles.redirectionText}>
                       Log in
                     </ThemedText>

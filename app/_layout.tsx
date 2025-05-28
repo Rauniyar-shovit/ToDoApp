@@ -1,18 +1,22 @@
 import { ThemedView } from "@/components/ThemedView";
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack } from "expo-router";
+import { Redirect, SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-import { ClerkProvider } from "@clerk/clerk-expo";
+import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { tokenCache } from "@clerk/clerk-expo/token-cache";
 SplashScreen.preventAutoHideAsync();
 
 function Layout() {
+  const { isSignedIn } = useAuth();
+
+  console.log("isSignedIn:", isSignedIn);
+
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      {/* <Stack.Screen name="(authentication)/signIn" />
-      <Stack.Screen name="(authentication)/signUp" /> */}
+      <Stack.Screen name="signUp" />
       <Stack.Screen name="verify/[email]" />
+      <Stack.Screen name="signIn" />
     </Stack>
   );
 }
