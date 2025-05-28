@@ -1,6 +1,12 @@
 import { ThemedView } from "@/components/ThemedView";
 import { useFonts } from "expo-font";
-import { Redirect, SplashScreen, Stack } from "expo-router";
+import {
+  Redirect,
+  SplashScreen,
+  Stack,
+  useRouter,
+  useSegments,
+} from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
@@ -8,15 +14,32 @@ import { tokenCache } from "@clerk/clerk-expo/token-cache";
 SplashScreen.preventAutoHideAsync();
 
 function Layout() {
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, isLoaded } = useAuth();
+  const router = useRouter();
+  const segments = useSegments();
 
-  console.log("isSignedIn:", isSignedIn);
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    const inTabsGroup = segments[0] === "(auth)";
+
+    if (isSignedIn && !inTabsGroup) {
+      router.replace("/(auth)/(tabs)");
+    } else if (!isSignedIn) {
+      {
+        router.replace("/signIn");
+      }
+    }
+  }, [isSignedIn]);
+
+  if (!isLoaded) return null;
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="signUp" />
       <Stack.Screen name="verify/[email]" />
       <Stack.Screen name="signIn" />
+      <Stack.Screen name="(authentication)/tabs" />
     </Stack>
   );
 }
