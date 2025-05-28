@@ -15,8 +15,11 @@ const SignInForm = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
-  } = useForm<FormType>({ mode: "onBlur", defaultValues: defaultLoginValues });
+    formState: { errors, dirtyFields },
+  } = useForm<FormType>({
+    mode: "onChange",
+    defaultValues: defaultLoginValues,
+  });
 
   const onSubmit = (data: any) => console.log(data);
 
@@ -39,6 +42,7 @@ const SignInForm = () => {
           },
         }}
         error={errors[SignInFields.EMAIL]}
+        isDirty={dirtyFields[SignInFields.EMAIL]}
       />
 
       <CustomTextInput<FormType>
@@ -61,6 +65,7 @@ const SignInForm = () => {
         }}
         error={errors[SignInFields.PASSWORD]}
         contentContainerStyles={{ marginBottom: 8 }}
+        isDirty={dirtyFields[SignInFields.PASSWORD]}
       />
 
       <TouchableOpacity style={{ alignItems: "flex-end" }}>
