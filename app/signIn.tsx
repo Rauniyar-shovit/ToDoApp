@@ -38,7 +38,7 @@ const SignIn = () => {
           <ThemedView style={styles.container}>
             <TouchableOpacity
               style={styles.registerBtn}
-              onPress={() => router.push("/(authentication)/signUp")}
+              onPress={() => router.push("/signUp")}
             >
               <ThemedText>Register</ThemedText>
             </TouchableOpacity>
@@ -74,9 +74,7 @@ const SignIn = () => {
                 >
                   Don&apos;t have an account?{" "}
                 </Text>
-                <TouchableOpacity
-                  onPress={() => router.replace("/(authentication)/signUp")}
-                >
+                <TouchableOpacity onPress={() => router.replace("/signUp")}>
                   <ThemedText style={styles.redirectionText}>
                     Sign Up
                   </ThemedText>
