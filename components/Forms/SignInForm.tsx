@@ -5,6 +5,8 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import PrimaryButton from "../PrimaryButton";
 import CustomTextInput from "../Reusable/CustomTextInput";
 import { ThemedText } from "../ThemedText";
+import { useSignIn } from "@clerk/clerk-expo";
+import { useRouter } from "expo-router";
 
 const SignInForm = () => {
   const defaultLoginValues = {
@@ -12,18 +14,51 @@ const SignInForm = () => {
     password: "",
   };
 
+  const { signIn, setActive, isLoaded } = useSignIn();
+  const router = useRouter();
   const {
     control,
     handleSubmit,
+    setError,
     formState: { errors, dirtyFields },
   } = useForm<FormType>({
     mode: "onChange",
     defaultValues: defaultLoginValues,
   });
 
-  const onSubmit = (data: any) => console.log(data);
+  const onSignIn = async (data: FormType) => {
+    if (!isLoaded) return;
 
-  console.log("Form errors:", errors);
+    // Start the sign-in process using the email and password provided
+    try {
+      const signInAttempt = await signIn.create({
+        identifier: data.email,
+        password: data.password,
+      });
+
+      // If sign-in process is complete, set the created session as active
+      // and redirect the user
+      if (signInAttempt.status === "complete") {
+        await setActive({ session: signInAttempt.createdSessionId });
+        router.replace("/(auth)/(tabs)");
+      } else {
+        setError("password", {
+          type: "manual",
+          message: "Unexpected error occurred. Please try again.",
+        });
+      }
+    } catch (err: any) {
+      console.log(JSON.stringify(err, null, 2));
+      setError("password", {
+        type: "manual",
+        message:
+          err.errors[0].code === "form_password_incorrect"
+            ? "Incorrect credentials. Please try again."
+            : "Unexpected error occurred. Please try again.",
+      });
+    }
+  };
+
   return (
     <>
       <CustomTextInput<FormType>
@@ -79,7 +114,7 @@ const SignInForm = () => {
           marginVertical: 48,
         }}
       >
-        <PrimaryButton handlePress={handleSubmit(onSubmit)}>
+        <PrimaryButton handlePress={handleSubmit(onSignIn)}>
           Sign In
         </PrimaryButton>
       </View>
