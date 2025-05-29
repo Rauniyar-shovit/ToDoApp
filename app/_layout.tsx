@@ -39,7 +39,6 @@ function Layout() {
       <Stack.Screen name="signUp" />
       <Stack.Screen name="verify/[email]" />
       <Stack.Screen name="signIn" />
-      <Stack.Screen name="(authentication)/tabs" />
     </Stack>
   );
 }

@@ -48,17 +48,32 @@ const SignInForm = () => {
         });
       }
     } catch (err: any) {
-      console.log(JSON.stringify(err, null, 2));
-      setError("password", {
-        type: "manual",
-        message:
-          err.errors[0].code === "form_password_incorrect"
-            ? "Incorrect credentials. Please try again."
-            : "Unexpected error occurred. Please try again.",
-      });
+      const clerkError = err?.errors?.[0];
+
+      if (clerkError?.code === "form_password_incorrect") {
+        setError("email", {
+          type: "manual",
+          message: "Incorrect email or password",
+        });
+        setError("password", {
+          type: "manual",
+        });
+      } else if (clerkError?.code === "form_identifier_not_found") {
+        setError("email", {
+          type: "manual",
+          message: "No account found with this email.",
+        });
+        setError("password", {
+          type: "manual",
+        });
+      } else {
+        setError("password", {
+          type: "manual",
+          message: "An unexpected error occurred.",
+        });
+      }
     }
   };
-
   return (
     <>
       <CustomTextInput<FormType>

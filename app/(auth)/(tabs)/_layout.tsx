@@ -19,7 +19,7 @@ export default function TabLayout() {
         }}
         redirect={!isSignedIn}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="settings"
         options={{
           title: "Settings",
@@ -28,7 +28,7 @@ export default function TabLayout() {
           ),
         }}
         redirect={!isSignedIn}
-      />
+      /> */}
     </Tabs>
   );
 }

@@ -1,15 +1,25 @@
 import { SignUpFormType as FormType, SignUpFields } from "@/types";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { StyleSheet, View } from "react-native";
 import PrimaryButton from "../PrimaryButton";
 import CustomTextInput from "../Reusable/CustomTextInput";
-import { useSignUp } from "@clerk/clerk-expo";
+import { useAuth, useSignUp } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
 
 const SignUpForm = () => {
-  const { isLoaded, signUp, setActive } = useSignUp();
+  const { isLoaded, signUp } = useSignUp();
+
   const router = useRouter();
+  const { isSignedIn, isLoaded: isAuthLoaded } = useAuth();
+  useEffect(() => {
+    if (!isAuthLoaded) return;
+
+    if (isSignedIn) {
+      router.replace("/(auth)/(tabs)");
+    }
+  }, [isSignedIn, isAuthLoaded, router]);
+
   const defaultSingUpValues = {
     email: "",
     password: "",
@@ -19,18 +29,17 @@ const SignUpForm = () => {
   const {
     control,
     handleSubmit,
+    setError,
     formState: { errors, dirtyFields },
   } = useForm<FormType>({
     mode: "onChange",
     defaultValues: defaultSingUpValues,
   });
 
-  const onSignUpPress = async (data: any) => {
+  const onSignUpPress = async (data: FormType) => {
     if (!isLoaded) return;
 
     try {
-      console.log("SignUp data:", data);
-
       await signUp.create({
         emailAddress: data.email,
         password: data.password,
@@ -43,19 +52,22 @@ const SignUpForm = () => {
         pathname: "/verify/[email]",
         params: { email: data.email },
       });
-
-      // Set 'pendingVerification' to true to display second form
-      // and capture OTP code
-      // setPendingVerification(true);
-    } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2));
+    } catch (err: any) {
+      const clerkError = err?.errors?.[0];
+      if (clerkError?.code === "form_identifier_exists") {
+        setError("email", {
+          type: "manual",
+          message: "Account already exists for this email",
+        });
+      } else {
+        setError("password", {
+          type: "manual",
+          message: err.errors[0].message,
+        });
+      }
+      console.log(JSON.stringify(err, null, 2));
     }
-    console.log(data);
   };
-
-  console.log("Form errors:", errors);
 
   return (
     <>
